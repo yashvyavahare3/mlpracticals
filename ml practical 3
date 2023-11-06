@@ -1,0 +1,60 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv(r"C:\Users\Kimaya S. Dhanawade\Desktop\Admission_Predict.csv")
+
+df.head()
+
+df.tail()
+
+df.shape
+
+df.columns
+
+df.describe()
+
+df.isnull().sum()
+
+df["Admit Student(0/1)"]= [ 0 if each<0.8
+                           else 1
+    for each in df["Chance of Admit "]
+]
+
+df
+
+#DATA SPLITTING
+from sklearn.model_selection import train_test_split
+x=df[ [ 'GRE Score' , 'TOEFL Score' , 'SOP' , 'LOR ' ,'CGPA'] ]
+y=df[ 'Admit Student(0/1)' ]
+xtrain,xtest,ytrain,ytest = train_test_split( x , y ,test_size=0.25  )
+
+#FITTING THE MODEL TO DATA
+from sklearn.tree import DecisionTreeClassifier
+clf =  DecisionTreeClassifier(max_depth=2)
+model = clf.fit(xtrain , ytrain)
+
+#PREDICTING y VALUES BASED ON CORRESPONDING x VALUES
+ypredict = model.predict(xtest)
+
+#PLOT TING THE TREE
+plt.figure(figsize=(8,8))
+from sklearn.tree import plot_tree
+a=plot_tree(model)
+
+
+#ASSESS THE PERFORMANCE OF THE MODEL
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(ytest,ypredict)
+print(cm)
+
+from sklearn.metrics import accuracy_score
+acs = accuracy_score(ytest,ypredict)*100
+ print(acs)
+
+
+from sklearn.metrics import classification_report
+cr = classification_report(ytest,ypredict)
+print(cr)
+
+
+
+
